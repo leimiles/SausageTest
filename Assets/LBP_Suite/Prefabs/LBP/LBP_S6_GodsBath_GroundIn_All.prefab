@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5663062003166827076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3634256994623909433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26967ffa48fab224ab51411ece45fe24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightmapIndex: 0
+  lightmapScaleAndOffset: {x: 0.99927884, y: 0.99927884, z: -0.0016380759, w: -0.0011047348}
+  lightmap: {fileID: 2800000, guid: a13d1ca87de01d2459075632c5ee5d6e, type: 3}
+--- !u!1 &7249734720970476593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6259265079654793339}
+  - component: {fileID: 1909748932}
+  - component: {fileID: 1909748933}
+  m_Layer: 0
+  m_Name: LBP_S6_GodsBath_GroundIn_All
+  m_TagString: LBP
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &6259265079654793339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249734720970476593}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 3634256994624270873}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1909748932
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249734720970476593}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: 1fc263e8b664b344ea062529e546142a, type: 3}
+--- !u!114 &1909748933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249734720970476593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d74a0972e474bd4a9107df5e7744cb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UserPartType: 2
+--- !u!1001 &672326705088210471
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6259265079654793339}
+    m_Modifications:
+    - target: {fileID: 4268265554093262878, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_Name
+      value: S6_GodsBath_GroundIn_All
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -860.05505
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 78.00032
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1128.4426
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000020955671
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.28401542
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.000000006207354
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.95881975
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4268265554095199966, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 575f0806d37ac334390535f758aa58d7, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc, type: 3}
+--- !u!1 &3634256994623909433 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4268265554093262878, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+    type: 3}
+  m_PrefabInstance: {fileID: 672326705088210471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3634256994624270873 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4268265554093298750, guid: 8d1d381e31ee9ad48a5e24206ce9b2bc,
+    type: 3}
+  m_PrefabInstance: {fileID: 672326705088210471}
+  m_PrefabAsset: {fileID: 0}
