@@ -6,7 +6,7 @@ using MileCode;
 using System.Collections.Generic;
 
 namespace MileCode {
-    public class LBP_Generator : EditorWindow {
+    public class LBP_Generator : Editor {
         static string LBPFolder = "Assets/LBP_Suite/Prefabs/LBP/";
         static string LBPMaterialsFolder = "Assets/LBP_Suite/Materials/LBP_Materials/";
         static Shader LBPShader;
@@ -33,13 +33,6 @@ namespace MileCode {
 
         static void FindPotentialLBP2(GameObject[] gameObjects) {
             foreach(GameObject go in gameObjects) {
-                //List<MeshRenderer> meshRenderers = new List<MeshRenderer>();
-                /*
-                MeshRenderer rootRender = go.GetComponent<MeshRenderer>();
-                if(rootRender != null) {
-                    meshRenderers.Add(rootRender);
-                }
-                */
                 MeshRenderer[] childrenRenders = go.GetComponentsInChildren<MeshRenderer>();
                 //meshRenderers.AddRange(childrenRenders);
                 if(CanUseLBPSettings2(childrenRenders)) {
