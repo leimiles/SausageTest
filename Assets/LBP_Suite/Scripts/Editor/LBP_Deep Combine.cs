@@ -44,23 +44,63 @@ namespace MileCode {
                     if(mr.lightmapIndex == i) {
                         //Debug.Log("Index: " + i);
                         //Debug.Log("Name: " + mr.gameObject.transform.parent == null ? mr.gameObject.name : mr.gameObject.transform.parent.name);
+                        /*
                         string prefabName;
                         if(mr.gameObject.transform.parent == null) {
                             prefabName = mr.gameObject.name;
                         } else {
                             prefabName = mr.gameObject.transform.parent.name;
                         }
-                        Debug.Log(prefabName);
+                        */
+                        //Debug.Log(prefabName);
                         Mesh lbdpMesh = CopyMeshWithNewUV2FromOldMesh(mr.gameObject.name, mr.GetComponent<MeshFilter>().sharedMesh, mr.lightmapScaleOffset);
                         string savePath = LBDPMeshesFolder + lbdpMesh.name + ".asset";
                         AssetDatabase.CreateAsset(lbdpMesh, savePath);
-                        PrepareLBDPMaterialForLightmap(EditorSceneManager.GetActiveScene().name + "_lightmap_" + i , LightmapSettings.lightmaps[i].lightmapColor);
-
+                        string materialName = EditorSceneManager.GetActiveScene().name + "_LBPDeep_" + i;
+                        Material material = AssetDatabase.LoadAssetAtPath<Material>(LBDPMaterialsFolder + materialName + ".mat");
+                        if(material == null) {
+                            //Debug.Log("can't find, need to do.");
+                            material = PrepareLBDPMaterialForLightmap(EditorSceneManager.GetActiveScene().name + "_LBPDeep_" + i, LightmapSettings.lightmaps[i].lightmapColor);
+                        }
+                        
+                        mr.gameObject.SetActive(false);
+                        CreateDeepPrefab(mr.gameObject.name, lbdpMesh, material, mr.transform, mr.transform.root);
+                        
                         //AssetDatabase.CreateAsset(new GameObject(prefabName),  LBDPFolder + prefabName + ".prefab");
                         //PrefabUtility.SaveAsPrefabAsset( (LBDPFolder + prefabName + ".prefab");
                     }
                 }
             }
+        }
+
+        static void CreateDeepPrefab(string name, Mesh mesh, Material material, Transform parentTransform, Transform rootNode) {
+            GameObject gameObject = new GameObject(name + "_LBP");
+            GameObject rootObject = null ;
+            if(rootNode.name != name) {
+                rootObject = GameObject.Find(rootNode.gameObject.name + "_LBP");
+                if(rootObject == null) {
+                    rootObject = new GameObject(rootNode.gameObject.name + "_LBP");
+                    rootObject.transform.position = rootNode.transform.position;
+                    rootObject.transform.rotation = rootNode.transform.rotation;
+                    gameObject.transform.SetParent(rootObject.transform);
+                } else {
+                    gameObject.transform.SetParent(rootObject.transform);
+                }
+            }
+            gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
+            gameObject.AddComponent<MeshRenderer>().sharedMaterial = material;
+            gameObject.transform.position = parentTransform.position;
+            gameObject.transform.rotation = parentTransform.rotation;
+            gameObject.isStatic = true;
+            
+            //Debug.Log(gameObject.name + " is ready. ");
+            if(rootObject != null) {
+
+                PrefabUtility.SaveAsPrefabAssetAndConnect(rootObject, LBDPFolder + rootObject.gameObject.name + ".prefab", InteractionMode.AutomatedAction);
+            } else {
+                PrefabUtility.SaveAsPrefabAssetAndConnect(gameObject, LBDPFolder + gameObject.name + ".prefab", InteractionMode.AutomatedAction);
+            }
+            
         }
 
         static Material PrepareLBDPMaterialForLightmap(string materialName, Texture2D lightmap) {
@@ -71,8 +111,6 @@ namespace MileCode {
             }
             return material;
         }
-
-
 
         static Mesh CopyMeshWithNewUV2FromOldMesh(string meshName, Mesh oldMesh, Vector4 scaleOffset) {
             Vector3[] vertices = oldMesh.vertices;
