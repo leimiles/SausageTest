@@ -41,17 +41,17 @@ public class TexCombiner : EditorWindow {
 
     Vector2 pos = new Vector2(10, 10);
     private void DrawSideFrameList() {
-        List<MeshRenderer> meshRenderers = TexItemList.GetSelectionObject();
-        if(meshRenderers == null || meshRenderers.Count < 1) {
-            GUILayout.Label("Nothing");
+        List<TexItem> texItems = TexItemList.GetTexItems();
+        if(texItems == null || texItems.Count < 1) {
+            GUILayout.Label("Nothing to show.");
             return;
         }
+
         using(var scrollView =  new GUILayout.ScrollViewScope(this.pos)) {
             this.pos = scrollView.scrollPosition;
-            foreach(MeshRenderer mr in meshRenderers) {
+            foreach(TexItem ti in texItems) {
                 GUILayout.BeginHorizontal();
-                GUILayout.Toggle(false, "");
-                GUILayout.Label(mr.name);
+                ti.Draw();
                 GUILayout.EndHorizontal();
             }
         }
@@ -62,11 +62,12 @@ public class TexCombiner : EditorWindow {
         return style;
     }
 
+    Shader shader;
     private void DrawTopFrame(GUIStyle style) {
         topFrame.width = this.position.width - 230;
-
         GUILayout.BeginArea(topFrame, guiContent, style);
         GUI.Box(new Rect(5, 20, topFrame.width - 10, topFrame.height - 25), "");
+        shader = (Shader)EditorGUILayout.ObjectField(shader, typeof(Shader), true);
         GUILayout.EndArea();
     }
 
