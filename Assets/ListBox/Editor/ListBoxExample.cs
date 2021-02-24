@@ -15,33 +15,7 @@ public class ListBoxExample : EditorWindow {
         _myListBox.AddEntry("Item 1");
         _myListBox.AddEntry("Item 2");
         _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 5");
-        _myListBox.AddEntry("Item 1");
-        _myListBox.AddEntry("Item 2");
-        _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 5");
-        _myListBox.AddEntry("Item 1");
-        _myListBox.AddEntry("Item 2");
-        _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 1");
-        _myListBox.AddEntry("Item 2");
-        _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 5");
-        _myListBox.AddEntry("Item 1");
-        _myListBox.AddEntry("Item 2");
-        _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 5");
-        _myListBox.AddEntry("Item 1");
-        _myListBox.AddEntry("Item 2");
-        _myListBox.AddEntry("Item 3");
-        _myListBox.AddEntry("Item 4");
-        _myListBox.AddEntry("Item 5");
-        _myListBox.AddEntry("Item 5");
+
     }
     void Update() {
         Repaint();
