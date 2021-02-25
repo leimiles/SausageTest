@@ -38,6 +38,7 @@ public class TexCombiner : EditorWindow {
         //this.position.width = 984;
         //this.position.height = 909;
         this.minSize = new Vector2(984, 909);
+        //DropTextureGUI();
     }
 
     public void DropTextureGUI() {
@@ -80,7 +81,7 @@ public class TexCombiner : EditorWindow {
 
         }
         GUILayout.EndHorizontal();
-        DropTextureGUI();
+        //DropTextureGUI();
 
         //EditorGUI.DrawPreviewTexture(new Rect(20, 50, 700, 700), new Texture2D(10, 10));
         // = new Rect(mainFrame.position.x - 250, mainFrame.position.y - 125, 4069 / 6, 4096 / 6);
@@ -105,14 +106,26 @@ public class TexCombiner : EditorWindow {
         //GUILayout.Box(bgTexture);
         //GUI.Label(new Rect(0, 0, 50, 50), "fffffffffffffffffffffffffffffffffffffffffff");
         DrawRectGrid(16);
+        DrawTextureBlock();
         //GUILayout.EndArea();
         GUILayout.EndArea();
         
     }
 
+    Rect tempRect = new Rect(17, 55, 200, 200);
+    public void DrawTextureBlock() {
+        //EditorGUI.DrawPreviewTexture(tempRect, new Texture2D(30, 30));
+        
+        if(GUI.Button(tempRect, "ttt")) {
+            if(Event.current.type == EventType.Used) {
+                Debug.Log("..............");
+            }
+        }
+
+    }
+
     Color squareColor;
     private void DrawRectGrid(int number) {
-
         //int count = size / 256;
         int count = number;
 
@@ -198,11 +211,12 @@ public class TexCombiner : EditorWindow {
         using(var scrollView2 = new GUILayout.ScrollViewScope(this.pos2)) {
             this.pos2 = scrollView2.scrollPosition;
             GUILayout.BeginHorizontal();
-            int offsetX = 5;
+
             GUILayoutOption[] layouts = new GUILayoutOption[] {
                 GUILayout.Width(70),
-                GUILayout.Height(70)
+                GUILayout.Height(70),
             };
+            int offset = 0;
             foreach(TexItem ti in texItems) {
                 if(ti.IsSelected()) {
                     if(ti.ContainsTextures()) {
@@ -214,10 +228,22 @@ public class TexCombiner : EditorWindow {
                             //GUI.Box(new Rect(offsetX, 5, 50, 50), "tt");
 
                             //GUI.DrawTexture(new Rect(0, 0, 50, 50), requiredTexture);
-                            //EditorGUI.DrawPreviewTexture(new Rect(offsetX, 0, 80, 80), requiredTexture);
-                            if(GUILayout.Button(requiredTexture, layouts)) {
-                             
+                            //EditorGUI.DrawPreviewTexture(new Rect(offsetX, 0, 75, 75), requiredTexture);
+                            if(ti.isPressed) {
+                                EditorGUI.DrawRect(new Rect(6 + offset, 76, 65, 6), Color.green);
+                            } else {
+                                EditorGUI.DrawRect(new Rect(6 + offset, 76, 65, 6), Color.red);
                             }
+                            if(GUILayout.Button(requiredTexture, layouts)) {
+                                //EditorGUIUtility.AddCursorRect(new Rect(0, 0, 40, 40), MouseCursor.MoveArrow);
+                                if(ti.isPressed) {
+                                    ti.isPressed = false;
+                                } else {
+                                    ti.isPressed = true;
+                                }
+                                //Debug.Log(ti.GetTheTextureName());
+                            }
+                            offset += 75;
                             //GUILayout.Box(requiredTexture);
                         } else {
                             //GUILayout.Box(ti.GetName() + "  has no the " + textureNames[selectedTexChannelIndex] + " texture");
@@ -227,7 +253,7 @@ public class TexCombiner : EditorWindow {
                         //GUILayout.Box(ti.GetName() + "  has no textures");
                     }
                 }
-                offsetX += 50;
+                //offset += 70;
             }
             GUILayout.EndHorizontal();
 

@@ -110,6 +110,7 @@ public class TexItem {
     Material material;
     List<Texture2D> textures;
     bool isSelected;
+    public bool isPressed;
     public TexItem(string name, MeshRenderer mr) {
         this.name = name;
         this.mr = mr;
@@ -117,6 +118,7 @@ public class TexItem {
         this.shader = mr.sharedMaterial.shader;
         this.material = mr.sharedMaterial;
         isSelected = false;
+        isPressed = false;
         textures = new List<Texture2D>();
         this.textures = this.GetTextures();
     }
@@ -129,14 +131,24 @@ public class TexItem {
         }
     }
 
+
+    public string GetTheTextureName() {
+        if(theTexture != null) {
+            return theTexture.name;
+        } else {
+            return "Null The Texture";
+        }
+    }
+
+    Texture2D theTexture;
     public Texture2D GetTheTexture(Material mat, string textureName) {
 
         if(this.material.shader.name != mat.shader.name) {
             return null;
         }
 
-        Texture2D texture = (Texture2D)material.GetTexture(textureName);
-        return texture;
+        theTexture = (Texture2D)material.GetTexture(textureName);
+        return theTexture;
     }
 
     public bool IsSelected() {
