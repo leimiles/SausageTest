@@ -70,7 +70,22 @@ public class TexItemList {
             _texItems.Clear();
         }
         _texItems = new List<TexItem>();
+        if(Selection.objects.Length == 0) {
+            return;
+        }
+        for(int i = 0; i < Selection.objects.Length; i++) {
+            GameObject gameObject = (GameObject)Selection.objects[i];
+            if(gameObject != null) {
+                MeshRenderer mr = gameObject.GetComponent<MeshRenderer>();
+                if(mr != null) {
 
+                    TexItem ti = new TexItem(mr.gameObject.name, mr);
+                    _texItems.Add(ti);
+
+                }
+            }
+        }
+        /*
         foreach(var obj in Selection.objects) {
             GameObject gameObject = (GameObject)obj;
             if(gameObject != null) {
@@ -83,6 +98,7 @@ public class TexItemList {
                 }
             }
         }
+        */
     }
 }
 
@@ -102,6 +118,25 @@ public class TexItem {
         this.material = mr.sharedMaterial;
         isSelected = false;
         textures = new List<Texture2D>();
+        this.textures = this.GetTextures();
+    }
+
+    public bool ContainsTextures() {
+        if(this.textures != null && this.textures.Count >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Texture2D GetTheTexture(Material mat, string textureName) {
+
+        if(this.material.shader.name != mat.shader.name) {
+            return null;
+        }
+
+        Texture2D texture = (Texture2D)material.GetTexture(textureName);
+        return texture;
     }
 
     public bool IsSelected() {
@@ -150,7 +185,11 @@ public class TexItem {
         int[] texturesIds = this.material.GetTexturePropertyNameIDs();
         if(texturesIds.Length >= 1) {
             for(int i = 0; i < texturesIds.Length; i++) {
-                this.textures.Add((Texture2D)this.material.GetTexture(texturesIds[i]));
+                //this.textures.Add((Texture2D)this.material.GetTexture(texturesIds[i]));
+                Texture2D tex = (Texture2D)this.material.GetTexture(texturesIds[i]);
+                if(tex != null) {
+                    this.textures.Add(tex);
+                }
             }
         }
         return this.textures;
