@@ -19,7 +19,6 @@ public class LBP_Combiner : MonoBehaviour {
             foreach(MeshRenderer mr in listMeshRenders) {
                 mr.gameObject.SetActive(false);
                 if(!temp.ContainsKey(mr.sharedMaterial)) {
-
                     temp.Add(mr.sharedMaterial, new List<MeshFilter>());
                     temp[mr.sharedMaterial].Add(mr.GetComponent<MeshFilter>());
                 } else {
@@ -42,22 +41,48 @@ public class LBP_Combiner : MonoBehaviour {
 
             GameObject go = new GameObject("LBP_Combined_" + i);
             go.AddComponent<MeshRenderer>().sharedMaterial = kvp.Key;
-            go.AddComponent<MeshFilter>().mesh = GetCombinedMesh(container[kvp.Key], go.gameObject.name + "_mesh");
+            //Debug.Log(kvp.Key + " is added.");
+            //go.AddComponent<MeshFilter>().mesh = GetCombinedMesh(container[kvp.Key], go.gameObject.name + "_mesh");
+            go.AddComponent<MeshFilter>().mesh = GetCombinedMeshV2(container[kvp.Key], go.gameObject.name + "_mesh");
             i++;
         }
     }
 
+    private Mesh GetCombinedMeshV2(List<MeshFilter> meshFilters, string combinedMeshName) {
+        //Debug.Log(meshFilters.Count + " meshes....");
+        CombineInstance[] combineInstances = new CombineInstance[meshFilters.Count];
+        for(int i = 0; i < combineInstances.Length; i++) {
+            combineInstances[i] = new CombineInstance();
+            combineInstances[i].mesh = meshFilters[i].sharedMesh;
+            combineInstances[i].transform = meshFilters[i].transform.localToWorldMatrix;
+        }
+
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.name = combinedMeshName;
+        combinedMesh.CombineMeshes(combineInstances);
+
+        return combinedMesh;
+    }
+
     private Mesh GetCombinedMesh(List<MeshFilter> meshFilters, string meshName) {
         List<CombineInstance> combinedInstances = new List<CombineInstance>();
+        CombineInstance ci;
         for(int i = 0; i < meshFilters.Count; i++) {
-            CombineInstance ci = new CombineInstance();
+            ci = new CombineInstance();
             ci.mesh = meshFilters[i].mesh;
             ci.transform = meshFilters[i].transform.localToWorldMatrix;
             combinedInstances.Add(ci);
+            break;
         }
+
+        //Debug.Log(combinedInstances.Count);
+
+
+
         Mesh combinedMesh = new Mesh();
         combinedMesh.name = meshName;
         combinedMesh.CombineMeshes(combinedInstances.ToArray());
+        //Debug.Log(combinedMesh.vertices.Length);
         return combinedMesh;
     }
 
