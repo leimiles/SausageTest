@@ -6,3 +6,4 @@ Library
 obj
 .vs
 .vscode
+*.vsconfig
