@@ -241,6 +241,29 @@ public class TexItemList {
         }
     }
 
+    public static void AddDataV2() {
+        if(_texItems == null) {
+            _texItems = new List<TexItem>();
+        }
+        foreach(var obj in Selection.objects) {
+            GameObject gameObject = (GameObject)obj;
+            if(gameObject != null) {
+                MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
+                if(mrs.Length > 0) {
+                    foreach(MeshRenderer mr in mrs) {
+                        TexItem ti = new TexItem(gameObject.name, mr);
+                        if(!TexItemList.Contains(ti)) {
+                            if(mr.gameObject.GetComponent<CanvasPositionHolder>() == null) {
+                                mr.gameObject.AddComponent<CanvasPositionHolder>();
+                            }
+                            _texItems.Add(ti);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static bool Contains(TexItem ti) {
         if(_texItems == null) {
             _texItems = new List<TexItem>();

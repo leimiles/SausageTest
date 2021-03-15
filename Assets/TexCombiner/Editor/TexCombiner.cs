@@ -496,6 +496,9 @@ public class TexCombiner : EditorWindow {
         if(GUILayout.Button("Add")) {
             TexItemList.AddData();
         }
+        if(GUILayout.Button("Temp")) {
+            TexItemList.AddDataV2();
+        }
         if(GUILayout.Button("Remove")) {
             TexItemList.RemoveFromList();
         }
