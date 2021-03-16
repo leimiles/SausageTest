@@ -17,9 +17,13 @@ public class TexItem {
     public CanvasPositionHolder cph;
     public Mesh newBorn;
     public bool isMoving;
+    public GameObject rootObj;
+    public GameObject selfObj;
 
     public TexItem(string name, MeshRenderer mr) {
         this.name = name;
+        this.rootObj = (mr.gameObject.transform.root == null) ? null : mr.gameObject.transform.root.gameObject;
+        this.selfObj = mr.gameObject;
         this.mr = mr;
         this.mf = mr.GetComponent<MeshFilter>();
         if(mf.sharedMesh != null) {
@@ -158,6 +162,9 @@ public class TexItem {
 
     public static bool operator ==(TexItem ti1, TexItem ti2) {
         bool status = false;
+        if(ti1.mr == null || ti2.mr == null) {
+            return false;
+        }
         if(ti1.mr.GetComponent<MeshFilter>().sharedMesh.name == ti2.mr.GetComponent<MeshFilter>().sharedMesh.name) {
             if(ti1.material.name == ti2.material.name) {
                 status = true;
@@ -168,6 +175,10 @@ public class TexItem {
 
     public static bool operator !=(TexItem ti1, TexItem ti2) {
         bool status = false;
+        if(ti1.mr == null || ti2.mr == null) {
+            return false;
+        }
+
         if(ti1.mr.GetComponent<MeshFilter>().sharedMesh.name != ti2.mr.GetComponent<MeshFilter>().sharedMesh.name) {
             if(ti1.material.name != ti2.material.name) {
                 status = true;

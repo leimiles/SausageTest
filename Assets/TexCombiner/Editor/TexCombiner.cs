@@ -99,8 +99,8 @@ public class TexCombiner : EditorWindow {
         if(GUILayout.Button("Combine", GUILayout.Width(170))) {
             // Combine only one texture
             TexItemList.CombineTheTexItem(GetTextureSizeLevel(outputTextureSize), gridCanvas, textureNames[selectedTexChannelIndex]);
-            SetOutput(TexItemList._combinerResults);
-            
+            SetOutputV2(TexItemList._combinerResults);
+
 
         }
         GUILayout.EndHorizontal();
@@ -113,7 +113,56 @@ public class TexCombiner : EditorWindow {
 
     }
 
-    
+    private void SetOutputV2(CombinerResults combinerResults) {
+        if(combinerResults != null && combinerResults.IsReady()) {
+            GameObject outputRoot = GameObject.Find("TexCombiner_output");
+            if(outputRoot == null) {
+                outputRoot = new GameObject("TexCombiner_output");
+            } else {
+                GameObject.DestroyImmediate(outputRoot);
+                outputRoot = new GameObject("TexCombiner_output");
+            }
+
+
+            List<GameObject> outputObjs = new List<GameObject>();
+            foreach(TexItem ti in combinerResults.combinedItems) {
+                if(ti.rootObj == null) {
+                    Debug.Log("no root");
+                } else {
+                    //Debug.Log(ti.rootObj.name + " -- " + ti.selfObj.name);
+                    //Instantiate(ti.rootObj);
+                    if(!outputObjs.Contains(ti.rootObj)) {
+                        outputObjs.Add(ti.rootObj);
+                    }
+                }
+            }
+
+            if(outputObjs.Count > 0) {
+                foreach(GameObject obj in outputObjs) {
+                    GameObject newGO = Instantiate(obj, outputRoot.transform);
+                    SetNewAssetsForGO(newGO, combinerResults);
+                }
+            }
+
+        }
+    }
+
+    private void SetNewAssetsForGO(GameObject go, CombinerResults combinerResults) {
+        MeshFilter[] mfs = go.GetComponentsInChildren<MeshFilter>();
+        Mesh[] meshes = combinerResults.GetMeshes();
+        for(int i = 0; i < mfs.Length; i++) {
+            var temp = mfs[i].GetComponent<CanvasPositionHolder>();
+            DestroyImmediate(temp);
+            for(int j = 0; j < meshes.Length; j++) {
+                if(mfs[i].sharedMesh.name == meshes[j].name.Replace("_temp", "")) {
+                    mfs[i].sharedMesh = meshes[j];
+                    mfs[i].GetComponent<MeshRenderer>().sharedMaterial = combinerResults.GetMaterial();
+                }
+            }
+        }
+    }
+
+
     private void SetOutput(CombinerResults combinerResults) {
         if(combinerResults != null && combinerResults.IsReady()) {
             GameObject outputRoot = GameObject.Find("TexCombiner_output");
@@ -131,12 +180,11 @@ public class TexCombiner : EditorWindow {
                 newItem.transform.localScale = ti.GetTransform().localScale;
                 newItem.AddComponent<MeshFilter>().sharedMesh = ti.GetNewBorn();
                 newItem.transform.SetParent(outputRoot.transform);
-
                 //newItem.transform = ti.GetTransform();
             }
         }
     }
-    
+
 
     Rect gridCanvas;
     private void DrawRectGridCanvas(Rect gridCanvas) {
@@ -156,7 +204,7 @@ public class TexCombiner : EditorWindow {
         //Debug.Log(texItems.Count);
         foreach(TexItem ti in texItems) {
             if(ti.isPressed && ti.IsSelected() && ti.theTexture != null) {
-                
+
 
                 Rect rect = new Rect(ti.position + mainFramePositionCorrection, ti.SetSizeForCanvas(GetTextureSizeLevel(outputTextureSize), gridCanvas, texItemScaleInCanvas));
                 //Debug.Log(ti.GetName());
@@ -174,7 +222,7 @@ public class TexCombiner : EditorWindow {
         //Debug.Log(texItems.Count);
     }
 
-    
+
 
     Rect toggleRect;
     private void DrawMoveButtonForKeyboard(TexItem ti) {
@@ -190,7 +238,10 @@ public class TexCombiner : EditorWindow {
                 if(ti.position.x >= (gridCanvas.width - ti.sizeForCanvas.x)) {
                     ti.position.x = (gridCanvas.width - ti.sizeForCanvas.x);
                 }
-                ti.cph.position.x = ti.position.x;
+                if(ti.cph != null) {
+                    ti.cph.position.x = ti.position.x;
+                }
+
             }
 
             if(Event.current.keyCode == KeyCode.LeftArrow && Event.current.type == EventType.KeyDown) {
@@ -200,7 +251,10 @@ public class TexCombiner : EditorWindow {
                 if(ti.position.x <= 0) {
                     ti.position.x = 0;
                 }
-                ti.cph.position.x = ti.position.x;
+                if(ti.cph != null) {
+                    ti.cph.position.x = ti.position.x;
+                }
+
             }
 
             if(Event.current.keyCode == KeyCode.UpArrow && Event.current.type == EventType.KeyDown) {
@@ -210,7 +264,10 @@ public class TexCombiner : EditorWindow {
                 if(ti.position.y <= 0) {
                     ti.position.y = 0;
                 }
-                ti.cph.position.y = ti.position.y;
+                if(ti.cph != null) {
+                    ti.cph.position.y = ti.position.y;
+                }
+
             }
 
             if(Event.current.keyCode == KeyCode.DownArrow && Event.current.type == EventType.KeyDown) {
@@ -220,7 +277,10 @@ public class TexCombiner : EditorWindow {
                 if(ti.position.y >= (gridCanvas.height - ti.sizeForCanvas.y)) {
                     ti.position.y = (gridCanvas.height - ti.sizeForCanvas.y);
                 }
-                ti.cph.position.y = ti.position.y;
+                if(ti.cph != null) {
+                    ti.cph.position.y = ti.position.y;
+                }
+
             }
 
         }
@@ -356,7 +416,6 @@ public class TexCombiner : EditorWindow {
     }
 
 
-
     private void DrawTopFrame(GUIStyle style) {
         topFrame.width = this.position.width - 280;
         GUILayout.BeginArea(topFrame, guiContent, style);
@@ -414,6 +473,7 @@ public class TexCombiner : EditorWindow {
                                     if(!requiredTexture.isReadable) {
                                         Debug.Log(requiredTexture.name + " is not readable");
                                         ti.isPressed = false;
+                                        ProjectWindowUtil.ShowCreatedAsset(requiredTexture);
                                     } else {
 
                                         ti.isPressed = true;
@@ -496,7 +556,7 @@ public class TexCombiner : EditorWindow {
         if(GUILayout.Button("Add")) {
             TexItemList.AddData();
         }
-        if(GUILayout.Button("Temp")) {
+        if(GUILayout.Button("Test")) {
             TexItemList.AddDataV2();
         }
         if(GUILayout.Button("Remove")) {

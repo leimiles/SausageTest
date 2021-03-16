@@ -28,6 +28,10 @@ public class CombinerResults {
         
     }
 
+    public Mesh[] GetMeshes() {
+        return this.meshesForResult;
+    }
+
     public Material GetMaterial() {
         return this.materialForResults;
     }

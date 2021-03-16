@@ -251,7 +251,7 @@ public class TexItemList {
                 MeshRenderer[] mrs = gameObject.GetComponentsInChildren<MeshRenderer>();
                 if(mrs.Length > 0) {
                     foreach(MeshRenderer mr in mrs) {
-                        TexItem ti = new TexItem(gameObject.name, mr);
+                        TexItem ti = new TexItem(mr.gameObject.name, mr);
                         if(!TexItemList.Contains(ti)) {
                             if(mr.gameObject.GetComponent<CanvasPositionHolder>() == null) {
                                 mr.gameObject.AddComponent<CanvasPositionHolder>();
