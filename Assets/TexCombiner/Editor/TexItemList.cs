@@ -20,14 +20,148 @@ public class TexItemList {
                 temp.isMoving = false;
             }
         }
-        
+
     }
 
-    private string finalTextureSavePath;
-    private string finalMaterialSavePath;
-    private string finalMeshSavePath;
+    public static string _finalTextureSavePath = "";
+    public static string _finalMaterialSavePath = "";
+    public static string _finalMeshSavePath = "";
+
+
+    public static string GetFinalMeshSavePath() {
+        return _finalMeshSavePath;
+    }
+    public static void SetFinalMeshSavePath(string value) {
+        int index = value.IndexOf("Assets/");
+        if(index >= 0) {
+            _finalMeshSavePath = value.Substring(index);
+        }
+
+        //Debug.Log(_finalMeshSavePath);
+    }
+
+    public static string GetFinalTextureSavePath() {
+        return _finalTextureSavePath;
+    }
+    public static void SetFinalTextureSavePath(string value) {
+        int index = value.IndexOf("Assets/");
+        if(index >= 0) {
+            _finalTextureSavePath = value.Substring(index);
+        }
+    }
+
+    public static string GetFinalMaterialSavePath() {
+        return _finalMaterialSavePath;
+    }
+    public static void SetFinalMaterialSavePath(string value) {
+        int index = value.IndexOf("Assets/");
+        if(index >= 0) {
+            _finalMaterialSavePath = value.Substring(index);
+        }
+    }
+
 
     public static void CombineTheTexItem(int finalTextureSize, Rect canvasSize, string textureChannelName) {
+        if(_texItems == null) {
+            return;
+        }
+
+        _combinerResults = new CombinerResults();
+        // generate combined texture
+        Texture2D combinedTexture = new Texture2D(finalTextureSize, finalTextureSize, TextureFormat.RGBA32, true);
+        List<TexItem> toBeCombinedTexItems = new List<TexItem>();
+        for(int i = 0; i < _texItems.Count; i++) {
+            if(_texItems[i].theTexture != null && _texItems[i].isPressed && _texItems[i].IsSelected()) {
+                //Debug.Log(_texItems[i].theTexture.name);
+                Vector2 finalPos = _texItems[i].GetPositionForFinalTexture(finalTextureSize, canvasSize);
+                finalPos = TransformFromCanvasSpaceToTextureSpace(finalPos, finalTextureSize, canvasSize);
+                finalPos.y -= (int)_texItems[i].theTexture.height;
+                _texItems[i].SetUVOffset(finalPos);
+                //Debug.Log(finalPos);
+                combinedTexture.SetPixels((int)finalPos.x, (int)finalPos.y, (int)_texItems[i].theTexture.width, (int)_texItems[i].theTexture.height, _texItems[i].theTexture.GetPixels());
+                toBeCombinedTexItems.Add(_texItems[i]);
+            }
+        }
+
+        combinedTexture.Apply();
+        byte[] bytes = combinedTexture.EncodeToPNG();
+        /*
+        string combinedTexturePath = EditorUtility.SaveFilePanel("选择贴图保存目录", "Assets", "combinedTexture", "png");
+        int index = combinedTexturePath.IndexOf("Assets/");
+        if(index >= 0) {
+            combinedTexturePath = combinedTexturePath.Substring(index);
+            //Debug.Log(combinedTexturePath);
+            File.WriteAllBytes(combinedTexturePath, bytes);
+        }
+        */
+
+        if(_finalMaterialSavePath == "" || !_finalMaterialSavePath.EndsWith(".mat")) {
+            EditorUtility.DisplayDialog("警告", "非法的材质保存目录", "Try Again");
+            return;
+        } else {
+            //Debug.Log(_finalMaterialSavePath);
+        }
+
+        if(_finalTextureSavePath == "" || !_finalTextureSavePath.EndsWith(".png")) {
+            EditorUtility.DisplayDialog("警告", "非法的贴图保存目录", "Try Again");
+            return;
+        } else {
+            //Debug.Log(_finalTextureSavePath);
+        }
+
+        if(_finalMeshSavePath.EndsWith("/")) {
+            int lastIndex = _finalMeshSavePath.LastIndexOf('/');
+            _finalMeshSavePath = _finalMeshSavePath.Remove(lastIndex);
+        }
+
+        if(_finalMeshSavePath == "" || !AssetDatabase.IsValidFolder(_finalMeshSavePath)) {
+            EditorUtility.DisplayDialog("警告", "非法的网格保存目录", "Try Again");
+            Debug.Log("wrong: " + _finalMeshSavePath);
+            return;
+        } else {
+            //Debug.Log(_finalMeshSavePath);
+        }
+
+        // save texture
+        File.WriteAllBytes(_finalTextureSavePath, bytes);
+
+
+
+        // generate new meshes
+        // List<Mesh> newMeshes = null;
+        if(toBeCombinedTexItems.Count <= 0) {
+            return;
+        } else {
+            _combinerResults.SetItems(toBeCombinedTexItems);
+            //int meshFolderIndex = combinedTexturePath.LastIndexOf("/");
+
+            if(!_finalMeshSavePath.EndsWith("/")) {
+                _finalMeshSavePath += "/";
+            }
+            //Debug.Log(meshFolderPath);
+            List<Mesh> newMeshes = GenerateFitMeshes(toBeCombinedTexItems, finalTextureSize, canvasSize, _finalMeshSavePath);
+            _combinerResults.SetMeshes(newMeshes);
+
+
+        }
+
+        // generate new material
+        string matPath = _finalMaterialSavePath;
+        matPath = matPath.Replace("png", "mat");
+        if(matPath != "") {
+            Material combinedMat = new Material(toBeCombinedTexItems[0].GetShader());
+            //Debug.Log(textureChannelName);
+            // texture is not ready
+            //Texture2D newBornTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(combinedTexturePath);
+            //combinedMat.SetTexture(textureChannelName, newBornTexture);
+            AssetDatabase.CreateAsset(combinedMat, matPath);
+            _combinerResults.SetMaterial(combinedMat);
+        }
+
+
+    }
+
+    public static void CombineTheTexItemV2(int finalTextureSize, Rect canvasSize, string textureChannelName) {
         if(_texItems == null) {
             return;
         }
@@ -58,7 +192,7 @@ public class TexItemList {
             //Debug.Log(combinedTexturePath);
             File.WriteAllBytes(combinedTexturePath, bytes);
         }
-        
+
 
         // generate new meshes
         // List<Mesh> newMeshes = null;
@@ -133,7 +267,7 @@ public class TexItemList {
             Vector4 scaleOffset = new Vector4(ti.sizeForCanvas.x, ti.sizeForCanvas.y, ti.positionForFinalTexture.x, ti.positionForFinalTexture.y);
             scaleOffset.x = scaleOffset.x / (float)canvasSize.width;
             scaleOffset.y = scaleOffset.y / (float)canvasSize.height;
-            
+
             scaleOffset.z = ti.uvOffset.x / (float)finalTextureSize;
             scaleOffset.w = ti.uvOffset.y / (float)finalTextureSize;
 
@@ -173,11 +307,11 @@ public class TexItemList {
         );
         Vector2[] newUV = new Vector2[oldUV.Length];
         for(int i = 0; i < newUV.Length; i++) {
-            Vector3 newPoint =  uvMatrix.MultiplyPoint(new Vector3(oldUV[i].x, oldUV[i].y, 0));
+            Vector3 newPoint = uvMatrix.MultiplyPoint(new Vector3(oldUV[i].x, oldUV[i].y, 0));
             newUV[i].x = newPoint.x;
             newUV[i].y = newPoint.y;
         }
-        return newUV ;
+        return newUV;
         /*
         Matrix4x4 uvMatrix = new Matrix4x4(
                 new Vector4(scaleOffset.x, 0, 0, 0),
@@ -304,7 +438,7 @@ public class TexItemList {
                         }
                         _texItems.Add(ti);
                     }
-                    
+
                 }
             }
         }

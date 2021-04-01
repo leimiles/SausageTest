@@ -7,6 +7,7 @@ public class TexCombiner : EditorWindow {
     Rect sideFrame;
     Rect topFrame;
     Rect mainFrame;
+    Rect pathFrame;
     GUIContent guiContent;
     int selectedShaderIndex;
     ShaderInfo[] shaderInfos;
@@ -33,8 +34,9 @@ public class TexCombiner : EditorWindow {
     public void Init() {
         guiContent = new GUIContent("");
         sideFrame = new Rect(10, 10, 250, 500);
-        topFrame = new Rect(sideFrame.width + 20, 10, 500, 150);
-        mainFrame = new Rect(sideFrame.width + 20, 170, 500, 500);
+        topFrame = new Rect(sideFrame.width + 20, 10, 500, 165);
+        pathFrame = new Rect(sideFrame.x, 640, sideFrame.width, 123);
+        mainFrame = new Rect(sideFrame.width + 20, 185, 500, 500);
         shaderInfos = ShaderUtil.GetAllShaderInfo();
         squareColor = new Color(0.75f, 0.75f, 0.75f);
         mainFramePositionCorrection = new Vector2(10, 55);
@@ -50,14 +52,16 @@ public class TexCombiner : EditorWindow {
 
     private void OnGUI() {
         DrawSideFrame(GetSideFrameStyle());
+        DrawPathFrame(GetSideFrameStyle());
         DrawTopFrame(GetSideFrameStyle());
         DrawMainFrame(GetSideFrameStyle());
-        this.maxSize = new Vector2(812, 750);
+        this.maxSize = new Vector2(812, 765);
         //Debug.Log(this.position.width);
         //Debug.Log(this.position.height);
-        this.minSize = new Vector2(812, 750);
+        this.minSize = new Vector2(812, 765);
         //DropTextureGUI();
     }
+
     /*
     public void DropTextureGUI() {
         Event evt = Event.current;
@@ -85,7 +89,7 @@ public class TexCombiner : EditorWindow {
     Rect textureArea;
     Texture2D bgTexture;
     private void DrawMainFrame(GUIStyle style) {
-        mainFrame.height = this.position.height - 180;
+        mainFrame.height = this.position.height - 196;
         mainFrame.width = this.position.width - 280;
         GUILayout.BeginArea(mainFrame, guiContent, style);
         GUI.Box(new Rect(5, 20, mainFrame.width - 10, mainFrame.height - 25), "");
@@ -554,8 +558,38 @@ public class TexCombiner : EditorWindow {
         return gUIContents;
     }
 
+    private void DrawPathFrame(GUIStyle style) {
+        GUILayout.BeginArea(pathFrame, guiContent, style);
+
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("材质路径")) {
+            TexItemList.SetFinalMaterialSavePath(EditorUtility.OpenFolderPanel("选择合并材质存储路径", TexItemList.GetFinalMaterialSavePath(), ""));
+        }
+        if(GUILayout.Button("贴图路径")) {
+            TexItemList.SetFinalTextureSavePath(EditorUtility.OpenFolderPanel("选择合并贴图存储路径", TexItemList.GetFinalTextureSavePath(), ""));
+        }
+        if(GUILayout.Button("网格路径")) {
+            TexItemList.SetFinalMeshSavePath(EditorUtility.OpenFolderPanel("选择合并网格存储路径", TexItemList.GetFinalMeshSavePath(),  ""));
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("材质路径:");
+        TexItemList._finalMaterialSavePath = GUILayout.TextField(TexItemList._finalMaterialSavePath, GUILayout.Width(180));
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("贴图路径:");
+        TexItemList._finalTextureSavePath = GUILayout.TextField(TexItemList._finalTextureSavePath, GUILayout.Width(180));
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("网格路径:");
+        GUILayout.TextField(TexItemList.GetFinalMeshSavePath(), GUILayout.Width(180));
+        GUILayout.EndHorizontal();
+        GUILayout.Label("(/材质名.mat, /贴图命.png, /网格文件夹)");
+        GUILayout.EndArea();
+    }
+
     private void DrawSideFrame(GUIStyle style) {
-        sideFrame.height = this.position.height - 20;
+        sideFrame.height = this.position.height - 150;
         GUILayout.BeginArea(sideFrame, guiContent, style);
         GUI.Box(new Rect(5, 45, sideFrame.width - 10, sideFrame.height - 50), "");
         GUILayout.BeginHorizontal();
