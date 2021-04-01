@@ -473,6 +473,15 @@ public class TexCombiner : EditorWindow {
                                     if(!requiredTexture.isReadable) {
                                         Debug.Log(requiredTexture.name + " is not readable");
                                         ti.isPressed = false;
+                                        if(EditorUtility.DisplayDialog("Comfirm", "将图片设置为可读写 ?", "Okay")) {
+                                            string texturePath = AssetDatabase.GetAssetPath(requiredTexture);
+                                            TextureImporter textureImporter = (TextureImporter)TextureImporter.GetAtPath(texturePath);
+                                            if(textureImporter != null) {
+                                                textureImporter.isReadable = true;
+                                                AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceUpdate);
+                                            }
+                                            //Debug.Log(textureImporter.isReadable);
+                                        }
                                         ProjectWindowUtil.ShowCreatedAsset(requiredTexture);
                                     } else {
 

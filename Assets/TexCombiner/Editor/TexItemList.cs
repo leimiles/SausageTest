@@ -23,6 +23,10 @@ public class TexItemList {
         
     }
 
+    private string finalTextureSavePath;
+    private string finalMaterialSavePath;
+    private string finalMeshSavePath;
+
     public static void CombineTheTexItem(int finalTextureSize, Rect canvasSize, string textureChannelName) {
         if(_texItems == null) {
             return;
